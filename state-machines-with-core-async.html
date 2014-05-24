@@ -1,0 +1,33 @@
+<html>
+<head>
+  <title>state machines with core.async</title>
+</head>
+<body>
+<h1>State machines with core.async</h1>
+<pre>
+  (ns state-machines
+    (:require-macros [cljs.core.async.macros :refer [go]])
+    (:require [cljs.core.async :refer [&lt;!]]))
+
+  (declare a b c)
+
+  (defn a [in]
+    (go (when-let [msg (&lt;! in)]
+          (if (= :a msg)
+            (b in)
+            (a in)))))
+  
+  (defn b [in]
+    (go (when-let [msg (&lt;! in)]
+          (if (= :b msg)
+            (c in)
+            (a in)))))
+
+  (defn c [in]
+    (go (when-let [msg (&lt;! in)]
+          (if (= :c msg)
+            (. js/console (log "yay!"))
+            (a in)))))
+</pre>
+</body>
+</html>
